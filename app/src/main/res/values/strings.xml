@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">CineFlix</string>
+    <string name="cineflix">CINEFLIX</string>
+    <string name="nueva_peli">Nueva pelicula</string>
+    <string name="ver_sesiones">Ver sesiones</string>
+</resources>

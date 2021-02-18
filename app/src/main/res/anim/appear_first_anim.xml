@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <scale android:fromXScale="1.3dp"
+        android:toXScale="1dp"
+        android:fromYScale="1.6dp"
+        android:toYScale="1dp"
+        android:fillAfter = "true"
+        android:duration="3000"/>
+</set>
