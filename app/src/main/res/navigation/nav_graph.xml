@@ -18,5 +18,22 @@
         android:id="@+id/mainScreen"
         android:name="com.example.cineflix.MainScreen"
         android:label="fragment_main_screen"
-        tools:layout="@layout/fragment_main_screen" />
+        tools:layout="@layout/fragment_main_screen" >
+        <action
+            android:id="@+id/action_mainScreen_to_newFilm"
+            app:destination="@id/newFilm" />
+        <action
+            android:id="@+id/action_mainScreen_to_viewSession"
+            app:destination="@id/viewSession" />
+    </fragment>
+    <fragment
+        android:id="@+id/newFilm"
+        android:name="com.example.cineflix.newFilm"
+        android:label="fragment_new_film"
+        tools:layout="@layout/fragment_new_film" />
+    <fragment
+        android:id="@+id/viewSession"
+        android:name="com.example.cineflix.viewSession"
+        android:label="fragment_view_session"
+        tools:layout="@layout/fragment_view_session" />
 </navigation>

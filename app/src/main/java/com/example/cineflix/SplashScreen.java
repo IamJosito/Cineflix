@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.navigation.Navigation;
 
 import android.os.Handler;
@@ -111,6 +112,7 @@ public class SplashScreen extends Fragment {
                     @Override
                     public void run() {
                         Navigation.findNavController(vi).navigate(R.id.mainScreen);
+
                     }
                 }, 4000);
 

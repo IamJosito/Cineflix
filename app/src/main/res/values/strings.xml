@@ -3,4 +3,10 @@
     <string name="cineflix">CINEFLIX</string>
     <string name="nueva_peli">Nueva pelicula</string>
     <string name="ver_sesiones">Ver sesiones</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="volver">Volver</string>
+    <string name="nom_pelicula">Nombre de la pelicula</string>
+    <string name="guardar">Guardar</string>
+    <string name="nueva_sesion">Nueva sesión</string>
 </resources>

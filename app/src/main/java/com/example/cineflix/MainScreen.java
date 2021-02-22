@@ -1,11 +1,16 @@
 package com.example.cineflix;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,9 +20,10 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,83 +82,124 @@ public class MainScreen extends Fragment {
     Spinner sessionSpinner, hoursSpinner;
     ArrayAdapter<String> adapterSessions, adapterHours;
     LinearLayout layoutFilms;
+    SQLite sqlite;
+    Bundle bundle = new Bundle();
+    LinearLayout ll;
+    ArrayList sesiones = new ArrayList();
+    TextView newFilmTv;
+    ArrayList<ArrayList> horarios = new ArrayList();
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        newFilmTv = view.findViewById(R.id.goBack);
         sessionSpinner = view.findViewById(R.id.sessionsSpinner);
         hoursSpinner = view.findViewById(R.id.hoursSpinner);
         layoutFilms = view.findViewById(R.id.layoutFilms);
 
-        String[] sessions = new String[] {
-                "Sesion 1", "Sesion 2", "Sesion 3", "Sesion 4", "Sesion 5", "Sesion 6", "Sesion 7"
-        };
-
-        String[][] hours = new String[][] {
-                {"11:50","12:50"},
-                {"12:50","13:50"},
-                {"10:50","12:50"},
-                {"9:50","12:50"},
-                {"15:50","17:50"},
-                {"12:50","23:50"},
-                {"19:50","14:50"}
-        };
-        adapterSessions = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, sessions);
-        adapterHours = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, hours[0]);
-
-        adapterSessions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        adapterHours.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        sessionSpinner.setAdapter(adapterSessions);
-        hoursSpinner.setAdapter(adapterHours);
-
-        sessionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        newFilmTv.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                adapterHours = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, hours[position]);
-                hoursSpinner.setAdapter(adapterHours);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.newFilm);
             }
         });
 
-        //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
-        LinearLayout ll = new LinearLayout(view.getContext());
-        ll.setOrientation(LinearLayout.HORIZONTAL);
-        layoutFilms.addView(ll);
+        if(savedInstanceState == null){
+            sqlite = new SQLite(getContext(), "cine", null, 1);
+        }else{
+            sqlite = (SQLite) savedInstanceState.getSerializable("cine");
+        }
 
-        //Una vez agregado, creamos unos parametros para asignarselos al imageView
-        LinearLayout.LayoutParams lpImages = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //Ponemos el margen, usamos el | (int) ((int) X*getContext().getResources().getDisplayMetrics().density) | para convertilos a PX y podamos hacerlo bien
-        lpImages.setMargins((int) ((int) 20*getContext().getResources().getDisplayMetrics().density), (int) ((int) 10*getContext().getResources().getDisplayMetrics().density), 0,(int) ((int) 10*getContext().getResources().getDisplayMetrics().density));
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+        Cursor filasPeliculas = db.rawQuery("SELECT * FROM canciones", null);
+        if(filasPeliculas.getColumnCount() != 0){
+            while(filasPeliculas.moveToNext()){
 
-        //Ahora hacemos el image view.
-        ImageView img = new ImageView(getContext());
-        img.setLayoutParams(lpImages);
-        img.getLayoutParams().height = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
-        img.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
-        img.setBackgroundColor(Color.RED);
+                if(filasPeliculas.getInt(0)%3 == 0){
+                    //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
+                    ll = new LinearLayout(view.getContext());
+                    ll.setOrientation(LinearLayout.HORIZONTAL);
+                    layoutFilms.addView(ll);
+                }
 
-        //Finalmente lo agremaos al Linear Layout que hemos creado.
-        ll.addView(img);
+                //Una vez agregado, creamos unos parametros para asignarselos al imageView
+                LinearLayout.LayoutParams lpImages = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //Ponemos el margen, usamos el | (int) ((int) X*getContext().getResources().getDisplayMetrics().density) | para convertilos a PX y podamos hacerlo bien
+                lpImages.setMargins((int) ((int) 20*getContext().getResources().getDisplayMetrics().density), (int) ((int) 10*getContext().getResources().getDisplayMetrics().density), 0,(int) ((int) 10*getContext().getResources().getDisplayMetrics().density));
 
-        //Una vez agregado, creamos unos parametros para asignarselos al imageView
-        LinearLayout.LayoutParams lpTxt = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        //Ponemos el margen, usamos el | (int) ((int) X*getContext().getResources().getDisplayMetrics().density) | para convertilos a PX y podamos hacerlo bien
-        lpTxt.setMargins((int) ((int) -101*getContext().getResources().getDisplayMetrics().density), (int) ((int) 110*getContext().getResources().getDisplayMetrics().density), 0,0);
+                //Ahora hacemos el image view.
+                ImageView img = new ImageView(getContext());
+                img.setLayoutParams(lpImages);
+
+                byte[] imgByte = filasPeliculas.getBlob(1);
+                Bitmap bmp = BitmapFactory.decodeByteArray(imgByte,0,imgByte.length);
+                img.setImageBitmap(bmp);
+                img.getLayoutParams().height = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
+                img.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
+                img.setBackgroundColor(Color.RED);
+
+                //Finalmente lo agremaos al Linear Layout que hemos creado.
+                ll.addView(img);
+
+                //Una vez agregado, creamos unos parametros para asignarselos al imageView
+                LinearLayout.LayoutParams lpTxt = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //Ponemos el margen, usamos el | (int) ((int) X*getContext().getResources().getDisplayMetrics().density) | para convertilos a PX y podamos hacerlo bien
+                lpTxt.setMargins((int) ((int) -101*getContext().getResources().getDisplayMetrics().density), (int) ((int) 110*getContext().getResources().getDisplayMetrics().density), 0,0);
 
 
-        //Creamos el texto para que salga el titulo de la peli.
-        TextView txt = new TextView(getContext());
-        txt.setLayoutParams(lpTxt);
-        txt.setText("DINAMICO");
-        txt.setGravity(Gravity.CENTER);
-        txt.setTextColor(Color.WHITE);
-        txt.getLayoutParams().height = (int) ((int) 20*getContext().getResources().getDisplayMetrics().density);
-        txt.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
-        ll.addView(txt);
+                //Creamos el texto para que salga el titulo de la peli.
+                TextView txt = new TextView(getContext());
+                txt.setLayoutParams(lpTxt);
+                txt.setText(filasPeliculas.getString(2));
+                txt.setGravity(Gravity.CENTER);
+                txt.setTextColor(Color.WHITE);
+                txt.getLayoutParams().height = (int) ((int) 20*getContext().getResources().getDisplayMetrics().density);
+                txt.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
+                ll.addView(txt);
+            }
+        }
 
+
+        Cursor filasSesiones = db.rawQuery("SELECT * FROM salas", null);
+        if(filasSesiones.getColumnCount() != 0){
+            while(filasSesiones.moveToNext()){
+                sesiones.add(filasSesiones.getString(1));
+                Cursor filasHorarios = db.rawQuery("SELECT * FROM horarios WHERE sala = " + filasSesiones.getInt(0), null);
+                if(filasHorarios.getColumnCount() != 0){
+                    horarios.add(new ArrayList());
+                    while(filasHorarios.moveToNext()){
+                        horarios.get(horarios.size()-1).add(filasHorarios.getString(1));
+                    }
+                }
+            }
+        }
+
+
+        if(sesiones.size() != 0 || horarios.size() != 0){
+            adapterSessions = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, sesiones);
+            adapterHours = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, horarios.get(0));
+
+            adapterSessions.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            adapterHours.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+            sessionSpinner.setAdapter(adapterSessions);
+            hoursSpinner.setAdapter(adapterHours);
+
+
+            sessionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    adapterHours = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, horarios.get(position));
+                    hoursSpinner.setAdapter(adapterHours);
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+        }
     }
+
+
 }
