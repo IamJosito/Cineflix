@@ -84,6 +84,7 @@ public class SplashScreen extends Fragment {
         netflixSound = MediaPlayer.create(getContext(), R.raw.netflix_sound);
         tv = view.findViewById(R.id.tv);
 
+        getContext().deleteDatabase("cine");
 
         Animation anim = new ScaleAnimation(
                 0f, 1f, // Start and end values for the X axis scaling

@@ -18,7 +18,7 @@ public class SQLite extends SQLiteOpenHelper implements Serializable {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE canciones(codigo integer primary key, foto blob, nombre text)");
+        db.execSQL("CREATE TABLE peliculas(codigo integer primary key, foto blob, nombre text)");
         db.execSQL("CREATE TABLE salas(codigo integer primary key, nombre text, pelicula integer, FOREIGN KEY(pelicula) REFERENCES canciones(codigo))");
         db.execSQL("CREATE TABLE horarios(codigo integer primary key, horario text, sala integer, cancion integer, FOREIGN KEY(sala) REFERENCES salas(codigo), FOREIGN KEY(cancion) REFERENCES canciones(codigo))");
     }
@@ -48,6 +48,56 @@ public class SQLite extends SQLiteOpenHelper implements Serializable {
             db.insert("horarios",null,contenidoHorario);
         }
 
+        db.execSQL("PRAGMA foreign_keys = ON");
+    }
+
+    public void insertFilm(String nomPeli, String nomSesion, String hora, byte[] foto){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("PRAGMA foreign_keys = OFF");
+
+        ContentValues contenidoPelis = new ContentValues();
+        contenidoPelis.put("nombre", nomPeli);
+        contenidoPelis.put("foto", foto);
+        db.insert("peliculas", null, contenidoPelis);
+
+        String selectSalas = "SELECT * FROM salas WHERE nombre = '" + nomSesion + "'";
+        Cursor cursorSalas = db.rawQuery(selectSalas, null);
+        cursorSalas.moveToLast();
+
+
+        String selectPeliculas = "SELECT * FROM peliculas";
+        Cursor cursorPelis = db.rawQuery(selectPeliculas, null);
+        cursorPelis.moveToLast();
+        String idSalas = String.valueOf(cursorSalas.getInt(0));
+
+        String []args ={idSalas,hora};
+
+        ContentValues contenidoHoras = new ContentValues();
+        contenidoHoras.put("cancion", cursorPelis.getInt(0));
+        db.update("horarios", contenidoHoras, "sala = ? AND horario = ?",args);
+
+        db.execSQL("PRAGMA foreign_keys = ON");
+    }
+
+    public void updateFilm(String nuevoNom, byte[] nuevaFoto, int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("PRAGMA foreign_keys = OFF");
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("nombre", nuevoNom);
+        contentValues.put("foto", nuevaFoto);
+        db.update("peliculas", contentValues, "codigo = "+id, null);
+
+        db.execSQL("PRAGMA foreign_keys = ON");
+    }
+
+    public void deleteFilm(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys = OFF");
+        db.delete("peliculas", "codigo = " + id, null);
+        db.delete("horarios", "cancion = " + id, null);
         db.execSQL("PRAGMA foreign_keys = ON");
     }
 }

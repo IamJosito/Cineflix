@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/frameLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/netflix_black"
+    tools:context=".modFilm" >
+
+    <Spinner
+        android:id="@+id/spinnerHoras"
+        android:layout_width="230dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.147"
+        app:layout_constraintStart_toEndOf="@+id/textView7"
+        app:layout_constraintTop_toBottomOf="@+id/nom_pelicula" />
+
+    <EditText
+        android:id="@+id/nom_pelicula"
+        android:layout_width="230dp"
+        android:layout_height="42dp"
+        android:layout_marginTop="68dp"
+        android:ems="10"
+        android:fontFamily="sans-serif-smallcaps"
+        android:hint="@string/nom_pelicula"
+        android:inputType="textPersonName"
+        android:textColor="@color/netflix_white"
+        android:textColorHint="@color/hint_color"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
+        app:layout_constraintStart_toEndOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/foto" />
+
+    <Spinner
+        android:id="@+id/spinnerSala"
+        android:layout_width="230dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.159"
+        app:layout_constraintStart_toEndOf="@+id/textView6"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerHoras" />
+
+    <TextView
+        android:id="@+id/goBack2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/volver"
+        android:textColor="@color/netflix_white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/foto"
+        android:layout_width="166dp"
+        android:layout_height="160dp"
+        android:layout_marginTop="68dp"
+        android:src="@drawable/unnamed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="80dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/txtClickPeliculaNombre"
+        android:textColor="@color/netflix_white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/foto" />
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="48dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/txtClickPeliculaSalas"
+        android:textColor="@color/netflix_white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+
+    <TextView
+        android:id="@+id/textView7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginTop="48dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/txtClickPeliculaHoras"
+        android:textColor="@color/netflix_white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <TextView
+        android:id="@+id/modificar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="132dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/modificar"
+        android:textColor="@color/netflix_white"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerSala" />
+</androidx.constraintlayout.widget.ConstraintLayout>

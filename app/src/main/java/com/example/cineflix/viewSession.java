@@ -109,7 +109,7 @@ public class viewSession extends Fragment {
         if(filasSalas.getColumnCount() != 0){
             while(filasSalas.moveToNext()){
 
-                if(filasSalas.getInt(0)%3 == 0){
+                if(filasSalas.getInt(0)%3 == 1){
                     //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
                     ll = new LinearLayout(view.getContext());
                     ll.setOrientation(LinearLayout.HORIZONTAL);

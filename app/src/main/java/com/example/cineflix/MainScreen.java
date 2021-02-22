@@ -114,18 +114,14 @@ public class MainScreen extends Fragment {
             }
         });
 
-        if(savedInstanceState == null){
-            sqlite = new SQLite(getContext(), "cine", null, 1);
-        }else{
-            sqlite = (SQLite) savedInstanceState.getSerializable("cine");
-        }
+        sqlite = new SQLite(getContext(), "cine", null, 1);
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
-        Cursor filasPeliculas = db.rawQuery("SELECT * FROM canciones", null);
-        if(filasPeliculas.getColumnCount() != 0){
-            while(filasPeliculas.moveToNext()){
+        Cursor filaPelis = db.rawQuery("SELECT * FROM peliculas", null);
+        if(filaPelis.getColumnCount() != 0){
+            while(filaPelis.moveToNext()){
 
-                if(filasPeliculas.getInt(0)%3 == 0){
+                if(filaPelis.getInt(0)%3 == 1){
                     //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
                     ll = new LinearLayout(view.getContext());
                     ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -137,24 +133,27 @@ public class MainScreen extends Fragment {
                 //Ponemos el margen, usamos el | (int) ((int) X*getContext().getResources().getDisplayMetrics().density) | para convertilos a PX y podamos hacerlo bien
                 lpImages.setMargins((int) ((int) 20*getContext().getResources().getDisplayMetrics().density), (int) ((int) 10*getContext().getResources().getDisplayMetrics().density), 0,(int) ((int) 10*getContext().getResources().getDisplayMetrics().density));
 
+                Cursor filasHoras = db.rawQuery("SELECT * FROM horarios WHERE cancion = "+ filaPelis.getInt(0), null);
+                filasHoras.moveToFirst();
                 //Ahora hacemos el image view.
                 ImageView img = new ImageView(getContext());
                 img.setLayoutParams(lpImages);
 
-                byte[] imgByte = filasPeliculas.getBlob(1);
+                byte[] imgByte = filaPelis.getBlob(1);
                 Bitmap bmp = BitmapFactory.decodeByteArray(imgByte,0,imgByte.length);
                 img.setImageBitmap(bmp);
                 img.getLayoutParams().height = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
                 img.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
-                img.setTag(filasPeliculas.getString(2));
+                img.setTag(R.id.nombre,filaPelis.getInt(0));
+                img.setTag(R.id.hora, filasHoras.getInt(0));
+
 
                 img.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Bundle bundle = new Bundle();
-                        bundle.putString("nombre",img.getTag().toString());
-                        bundle.putParcelable("foto", ((BitmapDrawable) img.getDrawable()).getBitmap());
-
+                        bundle.putInt("peli", (Integer) img.getTag(R.id.nombre));
+                        bundle.putInt("hora", (Integer) img.getTag(R.id.hora));
                         Navigation.findNavController(v).navigate(R.id.clickOnFilm,bundle);
                     }
                 });
@@ -171,10 +170,10 @@ public class MainScreen extends Fragment {
                 //Creamos el texto para que salga el titulo de la peli.
                 TextView txt = new TextView(getContext());
                 txt.setLayoutParams(lpTxt);
-                txt.setText(filasPeliculas.getString(2));
+                txt.setText(filaPelis.getString(2));
                 txt.setGravity(Gravity.CENTER);
                 txt.setTextColor(Color.WHITE);
-                txt.getLayoutParams().height = (int) ((int) 20*getContext().getResources().getDisplayMetrics().density);
+                txt.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 txt.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
                 ll.addView(txt);
             }

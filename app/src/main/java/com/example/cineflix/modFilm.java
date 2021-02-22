@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,16 +23,23 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.github.johnpersano.supertoasts.library.Style;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
+
+import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link newFilm#newInstance} factory method to
+ * Use the {@link modFilm#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class newFilm extends Fragment {
+public class modFilm extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -42,7 +50,7 @@ public class newFilm extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public newFilm() {
+    public modFilm() {
         // Required empty public constructor
     }
 
@@ -52,11 +60,11 @@ public class newFilm extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment newFilm.
+     * @return A new instance of fragment modFilm.
      */
     // TODO: Rename and change types and number of parameters
-    public static newFilm newInstance(String param1, String param2) {
-        newFilm fragment = new newFilm();
+    public static modFilm newInstance(String param1, String param2) {
+        modFilm fragment = new modFilm();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,51 +81,60 @@ public class newFilm extends Fragment {
         }
     }
 
-    public static final int PICK_IMAGE = 1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_film, container, false);
+        return inflater.inflate(R.layout.fragment_mod_film, container, false);
     }
-    TextView goBack, guardar;
-    ImageView img;
-    EditText nom_pelicula;
+
+    String nombreAntiguo, horaAntiguo, salaAntiguo;
+    byte[] img;
     ArrayList sesiones = new ArrayList();
     ArrayList<ArrayList> horarios = new ArrayList();
     ArrayAdapter adapterSessions, adapterHours;
     Spinner sessionSpinner, hoursSpinner;
-    ImageView foto;
-
+    ImageView icon;
+    EditText etNomPelicula;
+    TextView modificar;
+    int idPeli;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SQLite sqlite = new SQLite(getContext(), "cine", null, 1);
-        goBack = view.findViewById(R.id.viewFilm);
-        img = view.findViewById(R.id.foto);
-        sessionSpinner = view.findViewById(R.id.spinnerSala);
-        hoursSpinner = view.findViewById(R.id.spinnerHoras);
-        guardar = view.findViewById(R.id.aceptar);
-        nom_pelicula = view.findViewById(R.id.nom_pelicula);
-        foto = view.findViewById(R.id.foto);
+        Bundle bundle = getArguments();
 
-        goBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Navigation.findNavController(v).navigate(R.id.mainScreen);
-            }
-        });
+        icon = view.findViewById(R.id.foto);
+        etNomPelicula = view.findViewById(R.id.nom_pelicula);
+        modificar = view.findViewById(R.id.modificar);
 
-        img.setOnClickListener(new View.OnClickListener() {
+        icon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
             }
         });
+
+        nombreAntiguo = bundle.getString("nombre");
+        horaAntiguo = bundle.getString("hora");
+        salaAntiguo = bundle.getString("sala");
+        img = bundle.getByteArray("img");
+        idPeli = bundle.getInt("idPeli");
+
+        Bitmap bmp = BitmapFactory.decodeByteArray(img,0,img.length);
+        icon.setImageBitmap(bmp);
+
+        etNomPelicula.setText(nombreAntiguo);
+
+        sessionSpinner = view.findViewById(R.id.spinnerSala);
+        hoursSpinner = view.findViewById(R.id.spinnerHoras);
+
+        SQLite sqlite = new SQLite(getContext(), "cine", null, 1);
+
         SQLiteDatabase db = sqlite.getWritableDatabase();
+
         Cursor filasSesiones = db.rawQuery("SELECT * FROM salas", null);
         if(filasSesiones.getColumnCount() != 0){
             while(filasSesiones.moveToNext()){
@@ -157,18 +174,23 @@ public class newFilm extends Fragment {
             });
         }
 
-        guardar.setOnClickListener(new View.OnClickListener() {
+        modificar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bitmap bitmap = ((BitmapDrawable) foto.getDrawable()).getBitmap();
+                Bitmap bitmap = ((BitmapDrawable) icon.getDrawable()).getBitmap();
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] imageInByte = baos.toByteArray();
+                sqlite.updateFilm(etNomPelicula.getText().toString(), imageInByte, idPeli);
 
-                String nomPeli = nom_pelicula.getText().toString();
-                String sala = sessionSpinner.getSelectedItem().toString();
-                String hora = hoursSpinner.getSelectedItem().toString();
-                sqlite.insertFilm(nomPeli,sala,hora,imageInByte);
+                SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_STANDARD)
+                        .setText("Modificado con exito!")
+                        .setDuration(Style.DURATION_SHORT)
+                        .setFrame(Style.FRAME_KITKAT)
+                        .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_BLUE))
+                        .setAnimations(Style.ANIMATIONS_POP).show();
+
+                Navigation.findNavController(v).navigate(R.id.mainScreen);
             }
         });
 
@@ -178,9 +200,9 @@ public class newFilm extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PICK_IMAGE) {
+        if (requestCode == 1) {
             Uri imageUri = data.getData();
-            img.setImageURI(imageUri);
+            icon.setImageURI(imageUri);
         }
     }
 }

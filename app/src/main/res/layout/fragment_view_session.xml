@@ -54,45 +54,7 @@
                 android:id="@+id/layoutSessions"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_width="110dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="0dp"
-                        android:fontFamily="sans-serif-smallcaps"
-                        android:gravity="center"
-                        android:text="Sesion: Sesion para niños"
-                        android:textColor="@color/netflix_white" />
-
-                    <TextView
-                        android:layout_width="110dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="0dp"
-                        android:fontFamily="sans-serif-smallcaps"
-                        android:gravity="center"
-                        android:text="Sesion: Sesion para hombres"
-                        android:textColor="@color/netflix_white" />
-
-                    <TextView
-                        android:layout_width="110dp"
-                        android:layout_height="40dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginTop="0dp"
-                        android:fontFamily="sans-serif-smallcaps"
-                        android:gravity="center"
-                        android:text="Sesion: Sesion para mujeres"
-                        android:textColor="@color/netflix_white" />
-                </LinearLayout>
-
-
-
-            </LinearLayout>
+                android:orientation="vertical"/>
         </ScrollView>
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

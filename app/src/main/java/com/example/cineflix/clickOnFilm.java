@@ -1,12 +1,25 @@
 package com.example.cineflix;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.github.johnpersano.supertoasts.library.Style;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,5 +73,77 @@ public class clickOnFilm extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_click_on_film, container, false);
+    }
+
+    ImageView img;
+    TextView nombreTv, salaTv, horaTv, modificar, borrar;
+    String salaToMod, horaToMod, nombreToMod;
+    byte[] imgToMod;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle bundle = getArguments();
+        img = view.findViewById(R.id.foto);
+        nombreTv = view.findViewById(R.id.nomPelicula);
+        salaTv = view.findViewById(R.id.sala);
+        horaTv = view.findViewById(R.id.hora);
+        modificar = view.findViewById(R.id.modificar);
+        borrar = view.findViewById(R.id.borrar);
+
+        SQLite sqlite = new SQLite(getContext(), "cine", null,1);
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+
+        String sqlPeli = "SELECT * FROM peliculas WHERE codigo = "+bundle.getInt("peli")+"";
+        String sqlSala = "SELECT * FROM salas WHERE codigo = (SELECT cancion FROM horarios WHERE codigo = "+bundle.getInt("hora")+")";
+        String sqlHora = "SELECT * FROM horarios WHERE codigo = " + bundle.getInt("hora");
+        Cursor peli = db.rawQuery(sqlPeli,null);
+        Cursor sala = db.rawQuery(sqlSala,null);
+        Cursor hora = db.rawQuery(sqlHora, null);
+
+        peli.moveToFirst();
+        sala.moveToFirst();
+        hora.moveToFirst();
+
+        System.out.println("Hora: " + bundle.getInt("hora") + " Peli: " + bundle.getInt("peli"));
+        nombreTv.setText(peli.getString(2));
+        byte[] imgByte = peli.getBlob(1);
+        Bitmap bmp = BitmapFactory.decodeByteArray(imgByte,0,imgByte.length);
+        img.setImageBitmap(bmp);
+        salaTv.setText(sala.getString(1));
+        horaTv.setText(hora.getString(1));
+
+        salaToMod = sala.getString(1);
+        horaToMod = hora.getString(1);
+        nombreToMod = peli.getString(2);
+        imgToMod = imgByte;
+
+        modificar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle2 = new Bundle();
+                bundle2.putString("sala",salaToMod);
+                bundle2.putString("hora",horaToMod);
+                bundle2.putString("nombre",nombreToMod);
+                bundle2.putByteArray("img", imgToMod);
+                bundle2.putInt("idPeli", bundle.getInt("peli"));
+                Navigation.findNavController(v).navigate(R.id.modFilm, bundle2);
+            }
+        });
+
+        borrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sqlite.deleteFilm(bundle.getInt("peli"));
+                SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_STANDARD)
+                        .setText("Pelicula "+nombreToMod+" borrada con éxito!")
+                        .setDuration(Style.DURATION_SHORT)
+                        .setFrame(Style.FRAME_KITKAT)
+                        .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_BLUE))
+                        .setAnimations(Style.ANIMATIONS_POP).show();
+                Navigation.findNavController(v).navigate(R.id.mainScreen);
+            }
+        });
+
+
     }
 }

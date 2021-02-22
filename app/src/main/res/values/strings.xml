@@ -23,4 +23,8 @@
     <string name="borrar">Borrar</string>
     <string name="modificar">Modificar</string>
 
+    <!-- Para poner varios tags -->
+    <item name="nombre" type="id" />
+    <item name="hora" type="id" />
+    <item name="idPeli" type="id"/>
 </resources>
