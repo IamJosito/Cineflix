@@ -1,12 +1,21 @@
 package com.example.cineflix;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -60,5 +69,70 @@ public class viewSession extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_view_session, container, false);
+
+    }
+
+    SQLite sqlite;
+    LinearLayout ll;
+    LinearLayout layoutSessions;
+    TextView goBack, nuevaSesion;
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        layoutSessions = view.findViewById(R.id.layoutSessions);
+        nuevaSesion = view.findViewById(R.id.new_session);
+        goBack = view.findViewById(R.id.goBack);
+
+        goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.mainScreen);
+            }
+        });
+
+        nuevaSesion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.newSession);
+            }
+        });
+
+        if(savedInstanceState == null){
+            sqlite = new SQLite(getContext(), "cine", null, 1);
+        }else{
+            sqlite = (SQLite) savedInstanceState.getSerializable("cine");
+        }
+
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+        Cursor filasSalas = db.rawQuery("SELECT * FROM salas", null);
+        if(filasSalas.getColumnCount() != 0){
+            while(filasSalas.moveToNext()){
+
+                if(filasSalas.getInt(0)%3 == 0){
+                    //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
+                    ll = new LinearLayout(view.getContext());
+                    ll.setOrientation(LinearLayout.HORIZONTAL);
+                    layoutSessions.addView(ll);
+                }
+
+
+                //Una vez agregado, creamos unos parametros para asignarselos al imageView
+                LinearLayout.LayoutParams lpTxt = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                //Ponemos el margen, usamos el | (int) ((int) X*getContext().getResources().getDisplayMetrics().density) | para convertilos a PX y podamos hacerlo bien
+                lpTxt.setMargins((int) ((int) 10*getContext().getResources().getDisplayMetrics().density), 0, 0,0);
+
+
+                //Creamos el texto para que salga el titulo de la peli.
+                TextView txt = new TextView(getContext());
+                txt.setLayoutParams(lpTxt);
+                txt.setText("Sala: " + filasSalas.getString(1));
+                txt.setGravity(Gravity.CENTER);
+                txt.setTextColor(Color.WHITE);
+                txt.getLayoutParams().height = (int) ((int) 40*getContext().getResources().getDisplayMetrics().density);
+                txt.getLayoutParams().width = (int) ((int) 110*getContext().getResources().getDisplayMetrics().density);
+                ll.addView(txt);
+            }
+        }
     }
 }

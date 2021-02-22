@@ -2,146 +2,97 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout2"
+    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".viewSession">
+    android:background="@color/netflix_black"
+    tools:context=".viewSession" >
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/frameLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/netflix_black"
-        tools:context=".MainScreen">
+    <TextView
+        android:id="@+id/goBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/volver"
+        android:textColor="@color/netflix_white"
+        android:textSize="18sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <RelativeLayout
-            android:layout_width="0dp"
-            android:layout_height="629dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.444"
-            app:layout_constraintStart_toStartOf="parent">
+    <TextView
+        android:id="@+id/new_session"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="172dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="sans-serif-smallcaps"
+        android:text="@string/nueva_sesion"
+        android:textColor="@color/netflix_white"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/goBack"
+        app:layout_constraintTop_toTopOf="parent" />
 
-            <ScrollView
-                android:id="@+id/scrollView"
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="629dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.444"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+
+                android:id="@+id/layoutSessions"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
+                android:layout_height="match_parent"
+                android:orientation="vertical">
                 <LinearLayout
-
-                    android:id="@+id/layoutFilms"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:layout_width="110dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:gravity="center"
+                        android:text="Sesion: Sesion para niños"
+                        android:textColor="@color/netflix_white" />
 
-                        <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="#c1c1c1" />
+                    <TextView
+                        android:layout_width="110dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:gravity="center"
+                        android:text="Sesion: Sesion para hombres"
+                        android:textColor="@color/netflix_white" />
 
-                        <TextView
-                            android:layout_width="100dp"
-                            android:layout_height="20dp"
-                            android:layout_marginLeft="-101dp"
-                            android:layout_marginTop="110dp"
-                            android:fontFamily="sans-serif-smallcaps"
-                            android:gravity="center"
-                            android:text="Hola"
-                            android:textColor="@color/netflix_white" />
-
-                        <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="#c1c1c1" />
-
-                        <TextView
-                            android:layout_width="100dp"
-                            android:layout_height="20dp"
-                            android:layout_marginLeft="-101dp"
-                            android:layout_marginTop="110dp"
-                            android:fontFamily="sans-serif-smallcaps"
-                            android:gravity="center"
-                            android:text="Hola"
-                            android:textColor="@color/netflix_white" />
-
-                        <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
-                            android:layout_marginLeft="20dp"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginBottom="10dp"
-                            android:background="#c1c1c1" />
-
-                        <TextView
-                            android:layout_width="100dp"
-                            android:layout_height="20dp"
-                            android:layout_marginLeft="-101dp"
-                            android:layout_marginTop="110dp"
-                            android:fontFamily="sans-serif-smallcaps"
-                            android:gravity="center"
-                            android:text="Hola"
-                            android:textColor="@color/netflix_white" />
-                    </LinearLayout>
-
-
+                    <TextView
+                        android:layout_width="110dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="0dp"
+                        android:fontFamily="sans-serif-smallcaps"
+                        android:gravity="center"
+                        android:text="Sesion: Sesion para mujeres"
+                        android:textColor="@color/netflix_white" />
                 </LinearLayout>
-            </ScrollView>
-        </RelativeLayout>
 
-        <TextView
-            android:id="@+id/goBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-smallcaps"
-            android:text="@string/volver"
-            android:textColor="@color/netflix_white"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
 
-        <Spinner
-            android:id="@+id/sessionsSpinner"
-            android:layout_width="136dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="12dp"
-            android:background="@color/netflix_white"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/goBack" />
 
-        <Spinner
-            android:id="@+id/hoursSpinner"
-            android:layout_width="136dp"
-            android:layout_height="42dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="12dp"
-            android:background="@color/netflix_white"
-            app:layout_constraintStart_toEndOf="@+id/sessionsSpinner"
-            app:layout_constraintTop_toBottomOf="@+id/newSessionTv" />
-
-        <TextView
-            android:id="@+id/newSessionTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="188dp"
-            android:layout_marginTop="16dp"
-            android:fontFamily="sans-serif-smallcaps"
-            android:text="@string/ver_sesiones"
-            android:textColor="@color/netflix_white"
-            android:textSize="18sp"
-            app:layout_constraintStart_toEndOf="@+id/goBack"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            </LinearLayout>
+        </ScrollView>
+    </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

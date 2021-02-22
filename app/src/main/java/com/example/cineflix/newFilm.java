@@ -1,5 +1,13 @@
 package com.example.cineflix;
 
+import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Intent;
+import android.content.IntentSender;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -7,9 +15,11 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -59,7 +69,7 @@ public class newFilm extends Fragment {
         }
     }
 
-
+    public static final int PICK_IMAGE = 1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -67,10 +77,12 @@ public class newFilm extends Fragment {
         return inflater.inflate(R.layout.fragment_new_film, container, false);
     }
     TextView goBack;
+    ImageView img;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        goBack = view.findViewById(R.id.goBack);
+        goBack = view.findViewById(R.id.viewFilm);
+        img = view.findViewById(R.id.imageView);
 
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,5 +90,25 @@ public class newFilm extends Fragment {
                 Navigation.findNavController(v).navigate(R.id.mainScreen);
             }
         });
+
+        img.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE) {
+            Uri imageUri = data.getData();
+            img.setImageURI(imageUri);
+        }
     }
 }

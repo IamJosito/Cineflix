@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -86,21 +87,30 @@ public class MainScreen extends Fragment {
     Bundle bundle = new Bundle();
     LinearLayout ll;
     ArrayList sesiones = new ArrayList();
-    TextView newFilmTv;
+    TextView newFilmTv, newSessionTv;
     ArrayList<ArrayList> horarios = new ArrayList();
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        newFilmTv = view.findViewById(R.id.goBack);
+        newFilmTv = view.findViewById(R.id.viewFilm);
+        newSessionTv = view.findViewById(R.id.newSessionTv);
         sessionSpinner = view.findViewById(R.id.sessionsSpinner);
         hoursSpinner = view.findViewById(R.id.hoursSpinner);
         layoutFilms = view.findViewById(R.id.layoutFilms);
+
 
         newFilmTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Navigation.findNavController(v).navigate(R.id.newFilm);
+            }
+        });
+
+        newSessionTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.viewSession);
             }
         });
 
@@ -136,7 +146,18 @@ public class MainScreen extends Fragment {
                 img.setImageBitmap(bmp);
                 img.getLayoutParams().height = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
                 img.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
-                img.setBackgroundColor(Color.RED);
+                img.setTag(filasPeliculas.getString(2));
+
+                img.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("nombre",img.getTag().toString());
+                        bundle.putParcelable("foto", ((BitmapDrawable) img.getDrawable()).getBitmap());
+
+                        Navigation.findNavController(v).navigate(R.id.clickOnFilm,bundle);
+                    }
+                });
 
                 //Finalmente lo agremaos al Linear Layout que hemos creado.
                 ll.addView(img);

@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/splashScreen">
+    app:startDestination="@id/viewSession">
 
     <fragment
         android:id="@+id/splashScreen"
@@ -21,10 +21,15 @@
         tools:layout="@layout/fragment_main_screen" >
         <action
             android:id="@+id/action_mainScreen_to_newFilm"
-            app:destination="@id/newFilm" />
+            app:destination="@id/newFilm"
+            app:enterAnim="@android:anim/fade_in"
+            app:exitAnim="@android:anim/fade_out" />
         <action
             android:id="@+id/action_mainScreen_to_viewSession"
             app:destination="@id/viewSession" />
+        <action
+            android:id="@+id/action_mainScreen_to_clickOnFilm"
+            app:destination="@id/clickOnFilm" />
     </fragment>
     <fragment
         android:id="@+id/newFilm"
@@ -35,5 +40,19 @@
         android:id="@+id/viewSession"
         android:name="com.example.cineflix.viewSession"
         android:label="fragment_view_session"
-        tools:layout="@layout/fragment_view_session" />
+        tools:layout="@layout/fragment_view_session" >
+        <action
+            android:id="@+id/action_viewSession_to_newSession"
+            app:destination="@id/newSession" />
+    </fragment>
+    <fragment
+        android:id="@+id/newSession"
+        android:name="com.example.cineflix.newSession"
+        android:label="fragment_new_session"
+        tools:layout="@layout/fragment_new_session" />
+    <fragment
+        android:id="@+id/clickOnFilm"
+        android:name="com.example.cineflix.clickOnFilm"
+        android:label="fragment_click_on_film"
+        tools:layout="@layout/fragment_click_on_film" />
 </navigation>

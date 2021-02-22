@@ -93,7 +93,7 @@
     </RelativeLayout>
 
     <TextView
-        android:id="@+id/goBack"
+        android:id="@+id/viewFilm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -113,7 +113,7 @@
         android:layout_marginTop="12dp"
         android:background="@color/netflix_white"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/goBack" />
+        app:layout_constraintTop_toBottomOf="@+id/viewFilm" />
 
     <Spinner
         android:id="@+id/hoursSpinner"
@@ -135,6 +135,8 @@
         android:text="@string/ver_sesiones"
         android:textColor="@color/netflix_white"
         android:textSize="18sp"
-        app:layout_constraintStart_toEndOf="@+id/goBack"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/viewFilm"
         app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

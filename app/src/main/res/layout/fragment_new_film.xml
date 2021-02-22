@@ -9,7 +9,7 @@
     tools:context=".newFilm" >
 
     <TextView
-        android:id="@+id/goBack"
+        android:id="@+id/viewFilm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -25,14 +25,15 @@
         android:id="@+id/aceptar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="112dp"
+        android:layout_marginBottom="60dp"
         android:fontFamily="sans-serif-smallcaps"
         android:text="@string/guardar"
         android:textColor="@color/netflix_white"
         android:textSize="30sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinnerHoras" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageView"
@@ -66,7 +67,7 @@
         android:id="@+id/spinnerSala"
         android:layout_width="358dp"
         android:layout_height="56dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.49"
         app:layout_constraintStart_toStartOf="parent"
