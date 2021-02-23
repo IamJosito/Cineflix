@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainScreen">
+    app:startDestination="@id/splashScreen">
 
     <fragment
         android:id="@+id/splashScreen"
@@ -44,6 +44,9 @@
         <action
             android:id="@+id/action_viewSession_to_newSession"
             app:destination="@id/newSession" />
+        <action
+            android:id="@+id/action_viewSession_to_clickOnSession"
+            app:destination="@id/clickOnSession" />
     </fragment>
     <fragment
         android:id="@+id/newSession"
@@ -64,4 +67,18 @@
         android:name="com.example.cineflix.modFilm"
         android:label="fragment_mod_film"
         tools:layout="@layout/fragment_mod_film" />
+    <fragment
+        android:id="@+id/clickOnSession"
+        android:name="com.example.cineflix.clickOnSession"
+        android:label="fragment_click_on_session"
+        tools:layout="@layout/fragment_click_on_session" >
+        <action
+            android:id="@+id/action_clickOnSession_to_modSes"
+            app:destination="@id/modSes" />
+    </fragment>
+    <fragment
+        android:id="@+id/modSes"
+        android:name="com.example.cineflix.modSes"
+        android:label="fragment_mod_ses"
+        tools:layout="@layout/fragment_mod_ses" />
 </navigation>

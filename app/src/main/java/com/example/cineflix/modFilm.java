@@ -96,7 +96,7 @@ public class modFilm extends Fragment {
     Spinner sessionSpinner, hoursSpinner;
     ImageView icon;
     EditText etNomPelicula;
-    TextView modificar;
+    TextView modificar, goBack;
     int idPeli;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -106,6 +106,15 @@ public class modFilm extends Fragment {
         icon = view.findViewById(R.id.foto);
         etNomPelicula = view.findViewById(R.id.nom_pelicula);
         modificar = view.findViewById(R.id.modificar);
+
+        goBack = view.findViewById(R.id.goBack);
+
+        goBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Navigation.findNavController(v).navigate(R.id.mainScreen);
+            }
+        });
 
         icon.setOnClickListener(new View.OnClickListener() {
             @Override

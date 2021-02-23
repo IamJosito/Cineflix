@@ -23,6 +23,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.github.johnpersano.supertoasts.library.Style;
+import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
+
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 
@@ -169,6 +173,12 @@ public class newFilm extends Fragment {
                 String sala = sessionSpinner.getSelectedItem().toString();
                 String hora = hoursSpinner.getSelectedItem().toString();
                 sqlite.insertFilm(nomPeli,sala,hora,imageInByte);
+                SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_STANDARD)
+                        .setText("Pelicula añadida!")
+                        .setDuration(Style.DURATION_SHORT)
+                        .setFrame(Style.FRAME_KITKAT)
+                        .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_BLUE))
+                        .setAnimations(Style.ANIMATIONS_POP).show();
             }
         });
 

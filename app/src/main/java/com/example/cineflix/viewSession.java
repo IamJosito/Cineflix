@@ -106,10 +106,11 @@ public class viewSession extends Fragment {
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
         Cursor filasSalas = db.rawQuery("SELECT * FROM salas", null);
+        int num = 1;
         if(filasSalas.getColumnCount() != 0){
             while(filasSalas.moveToNext()){
 
-                if(filasSalas.getInt(0)%3 == 1){
+                if(num%3 == 1){
                     //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
                     ll = new LinearLayout(view.getContext());
                     ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -131,7 +132,22 @@ public class viewSession extends Fragment {
                 txt.setTextColor(Color.WHITE);
                 txt.getLayoutParams().height = (int) ((int) 40*getContext().getResources().getDisplayMetrics().density);
                 txt.getLayoutParams().width = (int) ((int) 110*getContext().getResources().getDisplayMetrics().density);
+
+                txt.setTag(R.id.idSesion,filasSalas.getInt(0));
+                System.out.println("Tag de la sala:" + txt.getTag(R.id.idSesion));
+
+                txt.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putInt("idSala", (Integer) txt.getTag(R.id.idSesion));
+                        Navigation.findNavController(v).navigate(R.id.clickOnSession,bundle);
+                    }
+                });
+
+
                 ll.addView(txt);
+                num++;
             }
         }
     }

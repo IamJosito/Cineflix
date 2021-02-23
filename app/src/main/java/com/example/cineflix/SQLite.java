@@ -96,8 +96,45 @@ public class SQLite extends SQLiteOpenHelper implements Serializable {
     public void deleteFilm(int id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("PRAGMA foreign_keys = OFF");
+
         db.delete("peliculas", "codigo = " + id, null);
-        db.delete("horarios", "cancion = " + id, null);
+        db.delete("horarios","cancion = " + id, null);
+
+
+        db.execSQL("PRAGMA foreign_keys = ON");
+    }
+
+    public void deleteSession(int id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys = OFF");
+
+        db.delete("salas", "codigo = " + id, null);
+        db.delete("peliculas","codigo = (SELECT cancion FROM horarios WHERE sala = "+id+")", null);
+        db.delete("horarios","sala = " + id, null);
+
+
+
+        db.execSQL("PRAGMA foreign_keys = ON");
+    }
+
+    public void updateSession(int id, String nombre, ArrayList<String> horas){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("PRAGMA foreign_keys = OFF");
+
+        ContentValues contenidoSala = new ContentValues();
+        contenidoSala.put("nombre",nombre);
+        db.update("salas",contenidoSala,"codigo = "+id, null);
+        db.delete("horarios","sala = "+id,null);
+
+        ContentValues contenidoHorario = new ContentValues();
+        Cursor filasSalas = db.rawQuery("SELECT * FROM salas WHERE codigo = "+ id, null);
+        filasSalas.moveToLast();
+        for(String hora:horas){
+            contenidoHorario.put("horario",hora);
+            contenidoHorario.put("sala",filasSalas.getInt(0));
+            db.insert("horarios",null,contenidoHorario);
+        }
+
         db.execSQL("PRAGMA foreign_keys = ON");
     }
 }

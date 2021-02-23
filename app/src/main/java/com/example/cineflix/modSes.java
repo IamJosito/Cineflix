@@ -1,5 +1,7 @@
 package com.example.cineflix;
 
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -20,14 +22,15 @@ import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.github.johnpersano.supertoasts.library.utils.PaletteUtils;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link newSession#newInstance} factory method to
+ * Use the {@link modSes#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class newSession extends Fragment {
+public class modSes extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +41,7 @@ public class newSession extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public newSession() {
+    public modSes() {
         // Required empty public constructor
     }
 
@@ -48,11 +51,11 @@ public class newSession extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment newSession.
+     * @return A new instance of fragment modSes.
      */
     // TODO: Rename and change types and number of parameters
-    public static newSession newInstance(String param1, String param2) {
-        newSession fragment = new newSession();
+    public static modSes newInstance(String param1, String param2) {
+        modSes fragment = new modSes();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -73,20 +76,52 @@ public class newSession extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_new_session, container, false);
+        return inflater.inflate(R.layout.fragment_mod_ses, container, false);
     }
 
-    EditText etNombreSesion, etHora;
-    Spinner spinner;
+    TextView goBack, modificar;
+    EditText etNombre, etHoras;
+    Spinner spinnerHoras;
     Button btnGuardarHora, btnBorrarHora;
-    TextView guardar, goBack;
     ArrayList horas = new ArrayList();
-    SQLite sqlite;
+    ArrayAdapter adapterHours;
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        btnBorrarHora = view.findViewById(R.id.btnBorrarHora);
+        btnGuardarHora = view.findViewById(R.id.btnGuardarHora);
         goBack = view.findViewById(R.id.goBack);
+        etNombre = view.findViewById(R.id.etNombre);
+        etHoras = view.findViewById(R.id.etHoras);
+        spinnerHoras = view.findViewById(R.id.spinner);
+        modificar = view.findViewById(R.id.modificar);
+
+        Bundle bundle = getArguments();
+        int idSala = bundle.getInt("idSala");
+
+        SQLite sqlite = new SQLite(getContext(), "cine", null, 1);
+
+        SQLiteDatabase db = sqlite.getWritableDatabase();
+        Cursor filasSalas = db.rawQuery("SELECT * FROM salas WHERE codigo = " + idSala, null);
+        filasSalas.moveToLast();
+        System.out.println(idSala);
+
+        etNombre.setText(filasSalas.getString(1));
+
+        if(filasSalas.getColumnCount() != 0){
+            Cursor filasHorarios = db.rawQuery("SELECT * FROM horarios WHERE sala = " + idSala, null);
+            if(filasHorarios.getColumnCount() != 0){
+                while(filasHorarios.moveToNext()){
+                    horas.add(filasHorarios.getString(1));
+                }
+            }
+        }
+
+        if(horas.size() != 0){
+            adapterHours = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, horas);
+            adapterHours.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            spinnerHoras.setAdapter(adapterHours);
+        }
 
         goBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,46 +130,39 @@ public class newSession extends Fragment {
             }
         });
 
-        etNombreSesion = view.findViewById(R.id.etSesion);
-        etHora = view.findViewById(R.id.etHoras);
-        spinner = view.findViewById(R.id.spinner);
-        btnBorrarHora = view.findViewById(R.id.btnBorrarHora);
-        btnGuardarHora = view.findViewById(R.id.btnGuardarHora);
-        guardar = view.findViewById(R.id.aceptar);
-
-        sqlite = new SQLite(getContext(), "cine", null, 1);
-
         btnGuardarHora.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                horas.add(etHora.getText().toString());
+                horas.add(etHoras.getText().toString());
                 ArrayAdapter adapter = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, horas);
-                spinner.setAdapter(adapter);
-                etHora.setText("");
+                spinnerHoras.setAdapter(adapter);
+                etHoras.setText("");
             }
         });
 
         btnBorrarHora.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                horas.remove(spinner.getSelectedItemPosition());
+                horas.remove(spinnerHoras.getSelectedItemPosition());
                 ArrayAdapter adapter = new ArrayAdapter<String>(getContext(),R.layout.spinner_items, horas);
-                spinner.setAdapter(adapter);
+                spinnerHoras.setAdapter(adapter);
             }
         });
 
-        guardar.setOnClickListener(new View.OnClickListener() {
+        modificar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(!etNombreSesion.getText().toString().isEmpty() || !etHora.getText().toString().isEmpty()){
-                    sqlite.insertSession(etNombreSesion.getText().toString(), horas);
-                    SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_STANDARD)
-                            .setText("Sesion almacenada!")
-                            .setDuration(Style.DURATION_SHORT)
-                            .setFrame(Style.FRAME_KITKAT)
-                            .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_BLUE))
-                            .setAnimations(Style.ANIMATIONS_POP).show();
-                }
+                String nombreSesion = etNombre.getText().toString();
+                sqlite.updateSession(idSala,nombreSesion,horas );
+                SuperActivityToast.create(getActivity(), new Style(), Style.TYPE_STANDARD)
+                        .setText("Modificado con exito!")
+                        .setDuration(Style.DURATION_SHORT)
+                        .setFrame(Style.FRAME_KITKAT)
+                        .setColor(PaletteUtils.getSolidColor(PaletteUtils.MATERIAL_BLUE))
+                        .setAnimations(Style.ANIMATIONS_POP).show();
+                Bundle bundle2 = new Bundle();
+                bundle2.putInt("idSala",idSala);
+                Navigation.findNavController(v).navigate(R.id.clickOnSession, bundle2);
             }
         });
 

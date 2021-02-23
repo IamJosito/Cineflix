@@ -1,6 +1,7 @@
 package com.example.cineflix;
 
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -99,6 +101,7 @@ public class MainScreen extends Fragment {
         hoursSpinner = view.findViewById(R.id.hoursSpinner);
         layoutFilms = view.findViewById(R.id.layoutFilms);
 
+        layoutFilms.removeAllViews();
 
         newFilmTv.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,11 +120,13 @@ public class MainScreen extends Fragment {
         sqlite = new SQLite(getContext(), "cine", null, 1);
 
         SQLiteDatabase db = sqlite.getWritableDatabase();
+
+        int num = 1;
         Cursor filaPelis = db.rawQuery("SELECT * FROM peliculas", null);
         if(filaPelis.getColumnCount() != 0){
             while(filaPelis.moveToNext()){
 
-                if(filaPelis.getInt(0)%3 == 1){
+                if(num%3 == 1){
                     //Creamos un nuevo linear layout para agregarlo al que ya tenemos en nuestro scroll view.
                     ll = new LinearLayout(view.getContext());
                     ll.setOrientation(LinearLayout.HORIZONTAL);
@@ -176,6 +181,7 @@ public class MainScreen extends Fragment {
                 txt.getLayoutParams().height = ViewGroup.LayoutParams.WRAP_CONTENT;
                 txt.getLayoutParams().width = (int) ((int) 100*getContext().getResources().getDisplayMetrics().density);
                 ll.addView(txt);
+                num++;
             }
         }
 
