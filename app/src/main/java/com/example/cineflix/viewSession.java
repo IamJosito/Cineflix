@@ -130,7 +130,7 @@ public class viewSession extends Fragment {
                 txt.setText("Sala: " + filasSalas.getString(1));
                 txt.setGravity(Gravity.CENTER);
                 txt.setTextColor(Color.WHITE);
-                txt.getLayoutParams().height = (int) ((int) 40*getContext().getResources().getDisplayMetrics().density);
+                txt.getLayoutParams().height =  ViewGroup.LayoutParams.WRAP_CONTENT;
                 txt.getLayoutParams().width = (int) ((int) 110*getContext().getResources().getDisplayMetrics().density);
 
                 txt.setTag(R.id.idSesion,filasSalas.getInt(0));
